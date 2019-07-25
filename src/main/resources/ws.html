@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>WebSocket Service</title>
+<style>
+body{font-family:"黑体";}
+</style>
+<script type="text/javascript">
+	var socket = {};
+	socket.init = function(uri) {
+	
+		this.websocketUri = uri;
+		
+		console.log(1);
+		
+		socket.websocket = new WebSocket(socket.websocketUri);
+		
+		console.log(6);
+		
+		socket.websocket.onopen = function(evt) {
+			onOpen(evt)
+		};
+		socket.websocket.onclose = function(evt) {
+			onClose(evt)
+		};
+		socket.websocket.onmessage = function(evt) {
+			onMessage(evt)
+		};
+		socket.websocket.onerror = function(evt) {
+			onError(evt)
+		};
+	}
+
+	function onOpen(evt) {
+	console.log(2);
+
+		print("connected.......");
+		//sendMessage('{"token":"eyJhbGciOiJIUzI1NiJ9.eyJJc01mYVBhc3NlZCI6ZmFsc2UsIkVtYWlsIjoiMjAxODA4MzAwMUBxcS5jb20iLCJJcCI6IjE4MC4xNjcuNzUuNzUiLCJDcmVhdGVUaW1lIjoiMjAxOS0wNy0xN1QwOTozMTo1NC4yMCIsIkV4cGlyZUhvdXIiOjYsIklkIjoxNTU1MDEsIlNvdXJjZSI6MX0.NXjWJkfOLHyXKkfASs1dHz5HTV53pKI61L2442PdtMw"}');
+	}
+
+	function onClose(e) {
+	console.log(3);
+		print("disconnected.......");
+	}
+
+	function onMessage(e) {	
+		console.log(new Date().getTime() + " : " + e.data);
+		document.getElementById("output").innerHTML = new Date() + "<br/>";
+	}
+
+	function onError(e) {
+	console.log(e);
+		print('<span style="color: red;">error:</span>');
+	}
+	
+	
+	function sendPing() {
+		sendMessage('{"event":"ping"}');
+	}
+
+	function sendMessage(message) {
+		socket.websocket.send(message);
+	}
+
+	function print(message) {
+		var status = document.getElementById("status");
+		status.style.wordWrap = "break-word";
+		status.innerHTML = message + "<br/><br/>";
+	}
+
+	//window.onload = socket.init("ws://localhost:8090/ws"); //服务地址
+    window.onload = socket.init("ws://172.16.5.212:9100/websocket/123"); //服务地址
+	
+</script>
+<body>
+<h2>WebSocket API Service</h2>
+<div id="status">connection status : </div>
+<div id="output"></div>
+<br/>
+
+<br/>
+<input type="button" value="ping" name="ping" onclick="sendPing()"/>
+</body>
+
+</body>
+</html>
